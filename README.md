@@ -1,124 +1,129 @@
-1. **Close (or hide) the first modal before—or immediately after—opening the second modal** so there’s only one active modal.
-2. **Use `onShown` (or a similar event) on the second modal** to programmatically set focus to one of its buttons.
-3. **Verify you have a focus-trap directive (or the modal’s built-in focus-trap) only on the active modal** so focus stays contained in it.
+## First Trip
+- 28S to Reitz Crossing Rd on Left
 
-Below are the most common reasons why focus might be leaving the second modal along with some concrete strategies to fix it.
+- go past turn around spot
+- watch for gray garage with star on it, left turn signal
 
----
+  
+- Go a 0.8 miles, school is on the right up the hill.
+  
+- Reitz Crossing School
+  
+- Leave the school and turn right
+  
+- Turn right on Coal Glen Rd
+  
+- Allen Mills School just before intersection on right
+  
+- Go to end of road, to left toward Airport
+  
+- Turn right on Buchanon Rd 
+  
+- **Stop 1 at Split Rail Fence #270**
 
-## 1. Make sure there is only one _active_ modal
+- Turn right on Red Baun Rd to Stop Sign
+  
+- Left at next stop sign
+  
+- **Stop 2 Going up the hill there is a big tree on the right**
+  
+- **Stop 3 Before Silo with Star at mailbox on Left**
+  
+- **Stop 4 At Silo on the right a few ft down**
+  
+- **Stop 5 Barbed Fence on left with White Mailbox**
+  
+- Turn left on Moore Rd
 
-From your code, it looks like you’re opening the success modal (`openSuccessModel(...)`) and _then_ calling `closeModal()`. If both modals are alive for a split second and both have focus-trap logic, you can end up in a race condition where focus ends up on the underlying page or behind the modal.
+- **Stop 6 First house on Left - Red Shed**
 
-A straightforward fix is:
+- Left on Horm Run Rd
 
-```typescript
-// Instead of: 
-// this.openSuccessModel(this.successTemplate);
-// this.closeModal();
+- Right on Rt 830
 
-// Reverse the order or do them in the callback:
-this.closeModal();
-this.openSuccessModel(this.successTemplate);
-```
+- Left on Sterrat Rd
 
-Or, if you need to _open_ the success modal first, do something like:
+- Right at yield to McVitty Rd
 
-```typescript
-this.openSuccessModel(this.successTemplate);
+- **Stop 7 First house on right at top of hill**
 
-// Give it a quick delay, then close the first modal:
-setTimeout(() => this.closeModal(), 0);
-```
+- Go to end of road, turn right on Stevensonhill RD
 
-But in general, best practice is to hide/close the first modal before you show the second one—so you never end up with two “active” modals at once.
+- **Stop 8 Stop on left with House Wrap (new siding getting installed)**
 
----
+- Turn around at just past house
 
-## 2. Programmatically set focus in the second modal’s `onShown` event
+- Go back past dog house sign to left back on McVitty to T
 
-ngx-bootstrap’s `BsModalRef` emits an `onShown` event once the modal is fully rendered. That’s the perfect moment to set initial focus on a button or heading inside the modal.
+- Take right on Sterrat Rd
 
-For example, modify your `openSuccessModel` to do:
+- Cross 830 
 
-```typescript
-openSuccessModel(template: TemplateRef<any>) {
-  this.successModalRef = this.modalService.show(template, {
-    ...this.config,
-    ariaDescribedby: 'success-description',
-    // If you want to ensure a backdrop or ignore the ESC key, etc.
-  });
+- Turn right on Raybuck after .6 miles
 
-  // Wait for the modal to finish animating in and attach to the DOM
-  this.successModalRef.onShown.subscribe(() => {
-    // Focus the close button (or confirm button). Example:
-    const closeBtn = document.getElementById('success-close');
-    if (closeBtn) {
-      closeBtn.focus();
-    }
-    // Or if you wanted to focus the “Close” or “Yes” button:
-    // const yesBtn = document.getElementById('success-confirm-yes');
-    // if (yesBtn) {
-    //   yesBtn.focus();
-    // }
-  });
-}
-```
+- **Stop 9 Stop at mailbox at corn field on the right**
 
-With this approach, as soon as the success modal is fully open, focus will move to (say) the `success-close` button, and Tab will remain within the modal (assuming focus-trap is active and the first modal is already closed).
+- Should be no students on bus
 
----
+## Second Trip
 
-## 3. Confirm your custom `appFocusTrap` does not conflict
+- Go to end of Rayback rd and turn Right
 
-You’ve applied `appFocusTrap` to both modals. Usually that is fine—each modal can have its own focus trap. **But you don’t want two simultaneously “active” traps** (one for the first modal, one for the second). Again, that leads back to closing/hiding the first modal so there is only one active trap.
+- Go to Woodbury School
 
-If you still find that focus is escaping, ensure your `appFocusTrap` directive:
+- Left School toward Hick's Farm Go to Bushly Rd
 
-- Is correctly initialized on the second modal’s element.
-- Is not forcibly returning focus to the first modal or the background if the first modal is still open.
-- Has a way to specify the “initial” focus element or uses `document.activeElement` properly.
+- **Stop 1 Turn right on Bushly, first house on right**
 
----
+- **Stop 2 Second house on left - Pull in Driveway to turn around**
 
-## 4. Double-check your modal config for `keyboard` or `backdrop` settings
+- Go to Ridge rd -> Past Sugar Shack
 
-You mentioned using:
+- Turn around at Bill Stewarts old house
 
-```typescript
-config: any = {
-  backdrop: true,
-  keyboard: false,
-  ignoreBackdropClick: true,
-};
-```
+- **Stop 3 Bill Stewarts old house**
 
-- `keyboard: false` prevents closing the modal via `Esc` but it also means that normal built-in focus transitions (like pressing `Tab` or `Shift+Tab`) should still behave as expected _if_ the modal is on top.
-- `ignoreBackdropClick: true` just disables closing on backdrop clicks.
+- **Stop 4 Just past old Chimney near green dumpster**
 
-That’s all fine. The only optional improvement: if you strictly want to trap focus, you might consider `backdrop: 'static'`, which ensures the user cannot click outside the modal at all. That’s more of a design choice—some want the user to be able to interact with the background.
+- **Stop 5 Short ways up the road at the Crooked Tarp Shop Sign**
 
----
+- Go to Beachton Rd, turn around on Woodbury
 
-## Putting it all together
+- **Stop 6 Jen Williamson's old house**
 
-1. **Close the first modal before/while opening the second.** Make sure only one is “alive” at once.
-    
-2. **Use `onShown` on the second modal** to explicitly set focus to, say, the “Close” or “Save” button:
-    
-    ```typescript
-    openSuccessModel(template: TemplateRef<any>) {
-      this.successModalRef = this.modalService.show(template, {
-        ...this.config,
-        ariaDescribedby: 'success-description',
-      });
-    
-      this.successModalRef.onShown.subscribe(() => {
-        // Now that the modal is fully shown, set focus
-        const successCloseBtn = document.getElementById('success-close');
-        successCloseBtn?.focus();
-      });
-    }
-    ```
-    
-3. **Verify your `appFocusTrap`** doesn’t trap focus on the old/closed modal or require a background click. Usually removing/hiding the first modal is enough.
+- **Stop 7 Short ways up, blue house on the right**
+
+- Turn right on Woodbury
+
+- **Stop 8 Woodbury to Small Engine Repair Shop**
+
+
+- Should be no students left on the bus
+## Third Trip
+
+- Go to the OK Corale, just past the OK Corale on the R Mills Creek RD
+- School is back there- turn around at lumber yard
+
+- Just past Salada's House on the left in the pine trees is Shannon Rd
+
+- **Stop 1 at the end of Shannon**
+
+- Turn around back there
+
+- Back to Ok Corale
+
+- **Stop 2 at Big Umbrella at Ok Corale**
+
+- **Stop 3 Stop at the 15MPH curve on top of hill just past the big truck(if its there on r) - Stop is on right?**
+
+- **Stop 4 - 100ft up on right at fence**
+
+- **Stop 5 Another 100ft up on right at fence**
+
+- Turn right on 28 - Just past Nikki's old house
+
+- **Stop 6 At produce sign on the right just past Nikkis**
+
+- Turn around at garage where bus 10 used to turn around
+
+- **Stop 7  Sugar Hill Lumber just past Nikkis on right**
